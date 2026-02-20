@@ -80,13 +80,13 @@ Autenticación mediante Spring Security con control de acceso.
 ### 🧾 Gestión de Facturas
 
 #### Lista de Facturas
-![Lista Facturas](src/main/java/com/shirl/facturacion/docs/images/listaFacturas.png)
+![Lista Facturas](docs/images/listaFacturas.png)
 
 #### Nueva Factura
-![Nueva Factura](src/main/java/com/shirl/facturacion/docs/images/nuevaFactura.png)
+![Nueva Factura](docs/images/nuevaFactura.png)
 
 #### Vista Previa / Impresión
-![Imprimir Factura](src/main/java/com/shirl/facturacion/docs/images/imprimirFactura.png)
+![Imprimir Factura](docs/images/imprimirFactura.png)
 
 ## 🧠 Autor
 
