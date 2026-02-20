@@ -37,34 +37,45 @@ Autenticación mediante Spring Security con control de acceso.
 
 
 ### 🔐 Login
-![Login](src/main/java/com/shirl/facturacion/docs/images/login.png)
+![Login](docs/images/login.png)
 
 ---
 
 ### 📊 Dashboard
-![Dashboard](src/main/java/com/shirl/facturacion/docs/images/dashboard.png)
+![Dashboard](docs/images/dashboard.png)
 
 ---
 
 ### 👥 Gestión de Clientes
 
 #### Lista de Clientes
-![Lista Clientes](src/main/java/com/shirl/facturacion/docs/images/listaClientes.png)
+![Lista Clientes](docs/images/listaClientes.png)
 
 #### Nuevo Cliente
-![Nuevo Cliente](src/main/java/com/shirl/facturacion/docs/images/nuevoCliente.png)
+![Nuevo Cliente](docs/images/nuevoCliente.png)
 
 ---
 
 ### 📦 Gestión de Productos
 
 #### Lista de Productos
-![Lista Productos](src/main/java/com/shirl/facturacion/docs/images/listaProductos.png)
+![Lista Productos](docs/images/listaProductos.png)
 
 #### Nuevo Producto
-![Nuevo Producto](src/main/java/com/shirl/facturacion/docs/images/nuevoProducto.png)
+![Nuevo Producto](docs/images/nuevoProducto.png)
 
 ---
+
+### 🧾 Gestión de Facturas
+
+#### Lista de Facturas
+![Lista Facturas](docs/images/listaFacturas.png)
+
+#### Nueva Factura
+![Nueva Factura](docs/images/nuevaFactura.png)
+
+#### Vista Previa / Impresión
+![Imprimir Factura](docs/images/imprimirFactura.png)
 
 ### 🧾 Gestión de Facturas
 
