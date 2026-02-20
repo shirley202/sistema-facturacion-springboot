@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Nueva Factura</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="container mt-4">
+
+<h2>Nueva Factura</h2>
+
+<form th:action="@{/facturas/guardar}" th:object="${facturaRequest}" method="post">
+    <div class="mb-3">
+        <label>Escanear código de barras</label>
+        <input type="text"
+               id="scannerInput"
+               class="form-control"
+               placeholder="Escanee aquí"
+               onkeypress="buscarProducto(event)">
+    </div>
+
+    <!-- Cliente -->
+    <div class="mb-3">
+        <label>Cliente</label>
+        <select class="form-control" th:field="*{clienteId}" required>
+            <option value="">Seleccione cliente</option>
+            <option th:each="c : ${clientes}"
+                    th:value="${c.id}"
+                    th:text="${c.nombre}">
+            </option>
+        </select>
+    </div>
+
+    <hr>
+
+    <h4>Productos</h4>
+
+    <table class="table" id="detalleTable">
+        <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            <th>IVA</th>
+            <th>Subtotal</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <button type="button" class="btn btn-secondary mb-3" onclick="agregarFila()">
+        Agregar Producto
+    </button>
+
+    <hr>
+
+    <h5>Total General: <span id="totalGeneral">0.00</span></h5>
+
+    <button type="submit" class="btn btn-primary">Guardar Factura</button>
+
+</form>
+
+<script th:inline="javascript">
+
+    let index = 0;
+
+    // Productos enviados desde backend
+    const productos = /*[[${productos}]]*/ [];
+    function buscarProducto(event) {
+
+        if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            const codigo = event.target.value.trim();
+
+            const producto = productos.find(p => p.codigo === codigo);
+
+            if (!producto) {
+                alert("Producto no encontrado");
+                event.target.value = "";
+                return;
+            }
+
+            agregarProductoEscaneado(producto);
+
+            event.target.value = "";
+        }
+    }
+
+    function agregarProductoEscaneado(producto) {
+
+        const table = document.getElementById("detalleTable")
+            .getElementsByTagName('tbody')[0];
+
+        const row = table.insertRow();
+
+        row.innerHTML = `
+        <td>
+            ${producto.descripcion}
+            <input type="hidden"
+                name="items[${index}].productoId"
+                value="${producto.id}">
+        </td>
+        <td>
+            <input type="number"
+                value="1"
+                min="1"
+                class="form-control cantidad"
+                name="items[${index}].cantidad"
+                onchange="calcularFila(this)">
+        </td>
+        <td>
+            ${producto.precio}
+        </td>
+        <td class="iva">0.00</td>
+        <td class="subtotal">0.00</td>
+        <td>
+            <button type="button"
+                class="btn btn-danger"
+                onclick="eliminarFila(this)">X</button>
+        </td>
+    `;
+
+        row.dataset.iva = producto.iva;
+
+        calcularFila(row.querySelector(".cantidad"));
+
+        index++;
+    }
+
+    function agregarFila() {
+
+        const table = document.getElementById("detalleTable").getElementsByTagName('tbody')[0];
+        const row = table.insertRow();
+
+        row.innerHTML = `
+    <td>
+        <select class="form-control producto"
+            name="items[${index}].productoId"
+            onchange="actualizarPrecio(this)">
+            ${generarOpciones()}
+        </select>
+    </td>
+    <td>
+        <input type="number" min="1" value="1"
+            class="form-control cantidad"
+            name="items[${index}].cantidad"
+            onchange="calcularFila(this)">
+    </td>
+    <td>
+        <input type="text" class="form-control precio"
+            readonly>
+    </td>
+    <td class="iva">0.00</td>
+    <td class="subtotal">0.00</td>
+    <td>
+        <button type="button" class="btn btn-danger"
+            onclick="eliminarFila(this)">X</button>
+    </td>
+`;
+
+        index++;
+    }
+
+    function generarOpciones() {
+        let opciones = '<option value="">Seleccione</option>';
+        productos.forEach(p => {
+            opciones += `<option value="${p.id}"
+                            data-precio="${p.precio}"
+                            data-iva="${p.iva}">
+                            ${p.descripcion}
+                     </option>`;
+        });
+        return opciones;
+    }
+
+    function actualizarPrecio(select) {
+
+        const selected = select.options[select.selectedIndex];
+        const precio = parseFloat(selected.getAttribute("data-precio")) || 0;
+        const ivaPorcentaje = parseFloat(selected.getAttribute("data-iva")) || 0;
+
+        const row = select.closest("tr");
+
+        row.querySelector(".precio").value = precio.toFixed(2);
+
+        row.dataset.iva = ivaPorcentaje;
+
+        calcularFila(select);
+    }
+
+    function calcularFila(input) {
+
+        const row = input.closest("tr");
+
+        const cantidad = parseFloat(row.querySelector(".cantidad").value) || 0;
+        const precio = parseFloat(row.querySelector(".precio").value) || 0;
+        const ivaPorcentaje = parseFloat(row.dataset.iva) || 0;
+
+        const subtotal = cantidad * precio;
+
+        let iva = 0;
+
+        if (ivaPorcentaje === 10) {
+            iva = subtotal / 11;
+        } else if (ivaPorcentaje === 5) {
+            iva = subtotal / 21;
+        }
+
+        row.querySelector(".subtotal").innerText = subtotal.toFixed(2);
+        row.querySelector(".iva").innerText = iva.toFixed(2);
+
+        calcularTotal();
+    }
+
+    function eliminarFila(btn) {
+        btn.closest("tr").remove();
+        calcularTotal();
+    }
+
+    function calcularTotal() {
+        let total = 0;
+
+        document.querySelectorAll(".subtotal").forEach(td => {
+            total += parseFloat(td.innerText) || 0;
+        });
+
+        document.getElementById("totalGeneral").innerText = total.toFixed(2);
+    }
+
+
+</script>
+
+</body>
+</html>

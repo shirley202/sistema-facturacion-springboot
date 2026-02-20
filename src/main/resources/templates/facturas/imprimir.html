@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Factura</title>
+
+    <style>
+
+        body {
+            font-family: "Times New Roman", serif;
+            margin: 40px;
+            color: #000;
+        }
+
+        .acciones {
+            margin-bottom: 20px;
+        }
+
+        .encabezado {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid #000;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .empresa-box {
+            width: 60%;
+            border: 1px solid #000;
+            padding: 10px;
+        }
+
+        .empresa-box h2 {
+            margin: 0 0 5px 0;
+            font-size: 20px;
+            text-transform: uppercase;
+        }
+
+        .empresa-box p {
+            margin: 3px 0;
+            font-size: 13px;
+        }
+
+        .factura-box {
+            width: 35%;
+            border: 1px solid #000;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .factura-box h3 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+        }
+
+        .numero-factura {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+
+        .cliente-box {
+            border: 1px solid #000;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .cliente-box p {
+            margin: 4px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #000;
+            padding: 6px;
+            font-size: 13px;
+        }
+
+        th {
+            background: #eee;
+        }
+
+        td {
+            text-align: center;
+        }
+
+        td:first-child {
+            text-align: left;
+        }
+
+        .totales {
+            width: 40%;
+            margin-top: 20px;
+            margin-left: auto;
+            border: 1px solid #000;
+        }
+
+        .totales table {
+            border: none;
+        }
+
+        .totales td {
+            border: none;
+            padding: 6px;
+            font-size: 14px;
+        }
+
+        .total-general {
+            border-top: 2px solid #000;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .qr {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .qr img {
+            width: 110px;
+        }
+
+        @media print {
+            .acciones {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="acciones">
+    <button onclick="window.print()">🖨 Imprimir</button>
+    <a th:href="@{/facturas}" style="margin-left:10px;">← Volver</a>
+</div>
+
+<div class="encabezado">
+
+    <div class="empresa-box">
+        <h2>MI EMPRESA S.A.</h2>
+        <p><strong>RUC:</strong> 80012345-6</p>
+        <p><strong>Dirección:</strong> Asunción - Paraguay</p>
+        <p><strong>Tel:</strong> 021-123-456</p>
+    </div>
+
+    <div class="factura-box">
+        <h3>FACTURA ELECTRÓNICA</h3>
+        <div class="numero-factura" th:text="${factura.numero}"></div>
+        <p>
+            Fecha:
+            <span th:text="${#temporals.format(factura.fechaEmision,'dd/MM/yyyy HH:mm')}"></span>
+        </p>
+        <p>
+            CDC:
+            <span th:text="${factura.cdc}"></span>
+        </p>
+    </div>
+
+</div>
+
+<div class="cliente-box">
+    <p><strong>Cliente:</strong> <span th:text="${factura.cliente.nombre}"></span></p>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Precio</th>
+        <th>IVA</th>
+        <th>Subtotal</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="d : ${factura.detalles}">
+        <td th:text="${d.producto.descripcion}"></td>
+        <td th:text="${d.cantidad}"></td>
+        <td th:text="${#numbers.formatDecimal(d.precioUnitario,1,'POINT',2,'COMMA')}"></td>
+        <td th:text="${#numbers.formatDecimal(d.iva,1,'POINT',2,'COMMA')}"></td>
+        <td th:text="${#numbers.formatDecimal(d.subtotal,1,'POINT',2,'COMMA')}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="totales">
+    <table>
+        <tr>
+            <td>Total Gravado 10%</td>
+            <td th:text="${#numbers.formatDecimal(factura.totalGravado10,1,'POINT',2,'COMMA')}"></td>
+        </tr>
+        <tr>
+            <td>Total IVA</td>
+            <td th:text="${#numbers.formatDecimal(factura.totalIva,1,'POINT',2,'COMMA')}"></td>
+        </tr>
+        <tr class="total-general">
+            <td>Total General</td>
+            <td th:text="${#numbers.formatDecimal(factura.totalGeneral,1,'POINT',2,'COMMA')}"></td>
+        </tr>
+    </table>
+</div>
+
+<div class="qr" th:if="${qr != null}">
+    <img th:src="'data:image/png;base64,' + ${qr}" />
+</div>
+
+</body>
+</html>

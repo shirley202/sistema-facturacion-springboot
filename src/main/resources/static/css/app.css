@@ -1,0 +1,74 @@
+/* =========================
+   ESTILO GLOBAL EMPRESARIAL
+   ========================= */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f9;
+    margin: 0;
+}
+
+.container-box {
+    background: #ffffff;
+    padding: 20px;
+    margin-top: 25px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+h2 {
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.table {
+    font-size: 14px;
+}
+
+.table th {
+    background-color: #343a40;
+    color: white;
+}
+
+.btn {
+    font-size: 13px;
+}
+
+.card-metric {
+    border-radius: 6px;
+    padding: 15px;
+    color: white;
+    font-weight: 500;
+}
+
+.metric-primary { background: #1f3c88; }
+.metric-success { background: #2e7d32; }
+.metric-danger  { background: #c62828; }
+.metric-dark    { background: #212121; }
+/* LOGIN */
+
+.login-wrapper {
+    height: 100vh;
+    background: #f4f6f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-card {
+    width: 360px;
+    background: white;
+    padding: 30px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.login-title {
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.login-card .form-control {
+    font-size: 14px;
+}
